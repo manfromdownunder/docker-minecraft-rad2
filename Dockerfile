@@ -32,9 +32,13 @@ ENV MINECRAFT_VERSION="1.16.5" \
     ALLOW_NETHER="true"
 
 # Install dependencies
-RUN apt-get update && \
+RUN echo 'deb http://deb.debian.org/debian bullseye main' >> /etc/apt/sources.list && \
+    echo 'deb http://security.debian.org/debian-security bullseye-security main' >> /etc/apt/sources.list && \
+    echo 'deb http://deb.debian.org/debian bullseye-updates main' >> /etc/apt/sources.list && \
+    apt-get update && \
+    apt-get install -y software-properties-common && \
     apt-get upgrade -y && \
-    apt-get install -y --no-install-recommends $JAVA_VERSION wget git curl unzip tar nano top logrotate && \
+    apt-get install -y --no-install-recommends $JAVA_VERSION wget git curl unzip tar nano logrotate && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -50,7 +54,7 @@ RUN git clone https://github.com/manfromdownunder/docker-minecraft-rad2.git && \
     ./downloadmods.sh modslist.txt && \
     rm -rf docker-minecraft-rad2 && \
     rm -rf minecraft && \
-    rm -rf binaries && \
+    rm -rf binaries
 
 # Accept the Minecraft EULA and configure server properties
 RUN echo "eula=true" > eula.txt && \
