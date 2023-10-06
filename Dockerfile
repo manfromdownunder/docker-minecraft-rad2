@@ -2,7 +2,7 @@
 FROM debian:bullseye-slim
 
 # Set build-time variables
-ARG JAVA_VERSION="openjdk-8-jre-headless"
+ARG JAVA_VERSION="adoptopenjdk-8-hotspot-jre-headless"
 
 # Set default environment variables
 ENV MINECRAFT_VERSION="1.16.5" \
@@ -36,9 +36,12 @@ RUN echo 'deb http://deb.debian.org/debian bullseye main' >> /etc/apt/sources.li
     echo 'deb http://security.debian.org/debian-security bullseye-security main' >> /etc/apt/sources.list && \
     echo 'deb http://deb.debian.org/debian bullseye-updates main' >> /etc/apt/sources.list && \
     apt-get update && \
-    apt-get install -y software-properties-common && \
+    apt-get install -y software-properties-common wget && \
+    wget -qO - https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | apt-key add - && \
+    add-apt-repository --yes https://adoptopenjdk.jfrog.io/adoptopenjdk/deb/ && \
+    apt-get update && \
     apt-get upgrade -y && \
-    apt-get install -y --no-install-recommends $JAVA_VERSION wget git curl unzip tar nano logrotate && \
+    apt-get install -y --no-install-recommends $JAVA_VERSION git curl unzip tar nano logrotate && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
