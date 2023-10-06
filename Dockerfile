@@ -31,18 +31,25 @@ ENV MINECRAFT_VERSION="1.16.5" \
     ALLOW_FLIGHT="true" \
     ALLOW_NETHER="true"
 
-# Install dependencies, clone repo, accept EULA, and configure server
+# Install initial dependencies
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends software-properties-common wget git curl unzip tar nano logrotate && \
-    wget -qO - https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | apt-key add - && \
+    apt-get install -y --no-install-recommends software-properties-common wget git curl unzip tar nano logrotate gnupg2 && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Add Java repository and install Java
+RUN wget -qO - https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | apt-key add - && \
     add-apt-repository --yes https://adoptopenjdk.jfrog.io/adoptopenjdk/deb/ && \
     apt-get update && \
     apt-get install -y --no-install-recommends $JAVA_VERSION && \
     apt-get clean && \
-    rm -rf /var/lib/apt/lists/* && \
-    mkdir -p /minecraft-server && \
-    cd /minecraft-server && \
-    git clone https://github.com/manfromdownunder/docker-minecraft-rad2.git && \
+    rm -rf /var/lib/apt/lists/*
+
+# Create a directory for the Minecraft server
+WORKDIR /minecraft-server
+
+# Clone the install repo, download mods and perform cleanup
+RUN git clone https://github.com/manfromdownunder/docker-minecraft-rad2.git && \
     cp docker-minecraft-rad2/downloadmods.sh . && \
     cp docker-minecraft-rad2/modslist.txt . && \
     cp docker-minecraft-rad2/downloadFromCurseForge.js . && \
@@ -50,8 +57,10 @@ RUN apt-get update && \
     ./downloadmods.sh modslist.txt && \
     rm -rf docker-minecraft-rad2 && \
     rm -rf minecraft && \
-    rm -rf binaries && \
-    echo "eula=true" > eula.txt && \
+    rm -rf binaries
+
+# Accept the Minecraft EULA and configure server properties
+RUN echo "eula=true" > eula.txt && \
     { \
         echo "enable-rcon=${RCON_ENABLED}"; \
         echo "rcon.password=${RCON_PASSWORD}"; \
@@ -77,4 +86,4 @@ RUN apt-get update && \
 EXPOSE $SERVER_PORT $RCON_PORT
 
 # Start the Minecraft server
-CMD java -Xmx${JAVA_MEMORY_MAX} -Xms${JAVA_MEMORY_MIN} -XX:PermSize=${JAVA_PERM_SIZE} -jar forge-${MINECRAFT_VERSION}-${FORGE_VERSION}.jar nogui
+CMD ["sh", "-c", "java -Xmx${JAVA_MEMORY_MAX} -Xms${JAVA_MEMORY_MIN} -XX:PermSize=${JAVA_PERM_SIZE} -jar forge-${MINECRAFT_VERSION}-${FORGE_VERSION}.jar nogui"]
