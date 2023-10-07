@@ -35,7 +35,8 @@ ENV MINECRAFT_VERSION="1.16.5" \
 WORKDIR /minecraft-server
 
 # Install initial dependencies and tools
-RUN mkdir -p /etc/apt/keyrings && \
+RUN apt-get update && \
+    mkdir -p /etc/apt/keyrings && \
     wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | tee /etc/apt/keyrings/adoptium.asc && \
     echo "deb [signed-by=/etc/apt/keyrings/adoptium.asc] https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print $2}' /etc/os-release) main" | tee /etc/apt/sources.list.d/adoptium.list && \
     apt-get install -y --no-install-recommends software-properties-common wget git curl unzip tar nano logrotate gnupg2 apt-transport-https && \
