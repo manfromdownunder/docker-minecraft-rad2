@@ -57,9 +57,9 @@ RUN git clone https://github.com/manfromdownunder/docker-minecraft-rad2.git && \
     cp docker-minecraft-rad2/downloadFromCurseForge.js . && \
     chmod +x ./downloadmods.sh && \
     ./downloadmods.sh modslist.txt && \
-    rm -rf docker-minecraft-rad2 && \
-    rm -rf minecraft && \
-    rm -rf binaries
+#    rm -rf docker-minecraft-rad2 && \
+#    rm -rf minecraft && \
+#    rm -rf binaries
 
 # Accept the Minecraft EULA and configure server properties
 RUN echo "eula=true" > eula.txt && \
