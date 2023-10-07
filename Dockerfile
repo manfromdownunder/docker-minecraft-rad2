@@ -49,7 +49,9 @@ RUN apt-get update && \
     cp docker-minecraft-rad2/downloadmods.sh . && \
     cp docker-minecraft-rad2/modslist.txt . && \
     cp docker-minecraft-rad2/downloadFromCurseForge.js . && \
-    chmod +x ./downloadmods.sh && \
+    cp docker-minecraft-rad2/start-server.sh . && \
+    chmod +x /minecraft-server/start-server.sh && \
+    chmod +x /minecraft-server/downloadmods.sh && \
     ./downloadmods.sh modslist.txt && \
     echo "eula=true" > eula.txt && \
     { \
@@ -73,11 +75,8 @@ RUN apt-get update && \
         echo "allow-nether=${ALLOW_NETHER}"; \
     } > server.properties
 
-# Copy the start-server script into the image
-COPY docker-minecraft-rad2/start-server.sh /minecraft-server/start-server.sh
-
 # Make the script executable
-RUN chmod +x /minecraft-server/start-server.sh
+RUN 
 
 # Expose the Minecraft server port and RCON port
 EXPOSE $SERVER_PORT $RCON_PORT
