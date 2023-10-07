@@ -41,6 +41,8 @@ RUN apt-get update && \
     echo "deb [signed-by=/etc/apt/keyrings/adoptium.asc] https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print $2}' /etc/os-release) main" | tee /etc/apt/sources.list.d/adoptium.list && \
     apt-get update && \
     apt-get install -y --no-install-recommends $JAVA_VERSION && \
+    curl -fsSL https://deb.nodesource.com/setup_14.x | bash - && \
+    apt-get install -y nodejs && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -81,8 +83,14 @@ RUN echo "eula=true" > eula.txt && \
         echo "allow-nether=${ALLOW_NETHER}"; \
     } > server.properties
 
+# Copy the start-server script into the image
+COPY start-server.sh /minecraft-server/start-server.sh
+
+# Make the script executable
+RUN chmod +x /minecraft-server/start-server.sh
+
 # Expose the Minecraft server port and RCON port
 EXPOSE $SERVER_PORT $RCON_PORT
 
-# Start the Minecraft server
-CMD ["sh", "-c", "java -Xmx${JAVA_MEMORY_MAX} -Xms${JAVA_MEMORY_MIN} -XX:PermSize=${JAVA_PERM_SIZE} -jar forge-${MINECRAFT_VERSION}-${FORGE_VERSION}.jar nogui"]
+# Start the Minecraft server via the script
+CMD ["/minecraft-server/start-server.sh"]
