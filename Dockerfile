@@ -7,29 +7,7 @@ ARG JAVA_VERSION="temurin-8-jdk"
 # Set default environment variables
 ENV MINECRAFT_VERSION="1.16.5" \
     SERVER_PORT="25565" \
-    MODPACK_URL="https://www.curseforge.com/minecraft/modpacks/roguelike-adventures-and-dungeons-2" \
-    JAVA_MEMORY_MAX="10000m" \
-    JAVA_MEMORY_MIN="8000m" \
-    JAVA_PERM_SIZE="256m" \
-    FORGE_VERSION="36.2.39" \
-    RCON_ENABLED="true" \
-    RCON_PASSWORD="yourpassword" \
-    RCON_PORT="25575" \
-    DIFFICULTY="normal" \
-    GAMEMODE="survival" \
-    HARDCORE="false" \
-    LEVEL_NAME="world" \
-    LEVEL_SEED="manfromdowunder" \
-    MAX_BUILD_HEIGHT="256" \
-    MAX_PLAYERS="5" \
-    MOTD="R.A.D. 2 Server" \
-    PLAYER_IDLE_TIMEOUT="0" \
-    PREVENT_PROXY_CONNECTIONS="false" \
-    PVP="true" \
-    SNOOPER_ENABLED="true" \
-    VIEW_DISTANCE="7" \
-    ALLOW_FLIGHT="true" \
-    ALLOW_NETHER="true"
+    ...
 
 # Install initial dependencies and tools
 RUN apt-get update && \
@@ -56,10 +34,7 @@ RUN git clone https://github.com/manfromdownunder/docker-minecraft-rad2.git && \
     cp docker-minecraft-rad2/modslist.txt . && \
     cp docker-minecraft-rad2/downloadFromCurseForge.js . && \
     chmod +x ./downloadmods.sh && \
-    ./downloadmods.sh modslist.txt && \
-#    rm -rf docker-minecraft-rad2 && \
-#    rm -rf minecraft && \
-#    rm -rf binaries
+    ./downloadmods.sh modslist.txt 
 
 # Accept the Minecraft EULA and configure server properties
 RUN echo "eula=true" > eula.txt && \
