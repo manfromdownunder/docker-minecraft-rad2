@@ -31,6 +31,9 @@ ENV MINECRAFT_VERSION="1.16.5" \
     ALLOW_FLIGHT="true" \
     ALLOW_NETHER="true"
 
+# Create a directory for the Minecraft server
+WORKDIR /minecraft-server
+
 # Install initial dependencies and tools
 RUN apt-get update && \
     apt-get install -y --no-install-recommends software-properties-common wget git curl unzip tar nano logrotate gnupg2 apt-transport-https && \
@@ -41,21 +44,14 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends $JAVA_VERSION && \
     curl -fsSL https://deb.nodesource.com/setup_16.x | bash - && \
     apt-get install -y nodejs && \
-    apt-get install -y libxfixes3 libxdamage1 libxcomposite1 libatk1.0-0 libnss3 libxss1 libasound2 libpangocairo-1.0-0 libcups2 libxrandr2 libgbm1 libatk-bridge2.0-0 libxkbcommon0
-
-# Create a directory for the Minecraft server
-WORKDIR /minecraft-server
-
-# Clone the install repo, download mods and perform cleanup
-RUN git clone https://github.com/manfromdownunder/docker-minecraft-rad2.git && \
+    apt-get install -y libxfixes3 libxdamage1 libxcomposite1 libatk1.0-0 libnss3 libxss1 libasound2 libpangocairo-1.0-0 libcups2 libxrandr2 libgbm1 libatk-bridge2.0-0 libxkbcommon0 && \
+    git clone https://github.com/manfromdownunder/docker-minecraft-rad2.git && \
     cp docker-minecraft-rad2/downloadmods.sh . && \
     cp docker-minecraft-rad2/modslist.txt . && \
     cp docker-minecraft-rad2/downloadFromCurseForge.js . && \
     chmod +x ./downloadmods.sh && \
-    ./downloadmods.sh modslist.txt
-
-# Accept the Minecraft EULA and configure server properties
-RUN echo "eula=true" > eula.txt && \
+    ./downloadmods.sh modslist.txt && \
+    echo "eula=true" > eula.txt && \
     { \
         echo "enable-rcon=${RCON_ENABLED}"; \
         echo "rcon.password=${RCON_PASSWORD}"; \
@@ -78,7 +74,7 @@ RUN echo "eula=true" > eula.txt && \
     } > server.properties
 
 # Copy the start-server script into the image
-COPY start-server.sh /minecraft-server/start-server.sh
+COPY docker-minecraft-rad2/start-server.sh /minecraft-server/start-server.sh
 
 # Make the script executable
 RUN chmod +x /minecraft-server/start-server.sh
