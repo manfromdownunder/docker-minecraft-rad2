@@ -75,9 +75,6 @@ RUN apt-get update && \
         echo "allow-nether=${ALLOW_NETHER}"; \
     } > server.properties
 
-# Make the script executable
-RUN 
-
 # Expose the Minecraft server port and RCON port
 EXPOSE $SERVER_PORT $RCON_PORT
 
