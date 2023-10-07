@@ -33,51 +33,10 @@ ENV MINECRAFT_VERSION="1.16.5" \
 
 # Install initial dependencies and tools
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    software-properties-common \
-    wget \
-    git \
-    curl \
-    unzip \
-    tar \
-    nano \
-    logrotate \
-    gnupg2 \
-    apt-transport-https \
-    libdl.so.2 \
-    libpthread.so.0 \
-    libgobject-2.0.so.0 \
-    libglib-2.0.so.0 \
-    libnss3.so \
-    libnssutil3.so \
-    libsmime3.so \
-    libnspr4.so \
-    libatk-1.0.so.0 \
-    libatk-bridge-2.0.so.0 \
-    libcups.so.2 \
-    libgio-2.0.so.0 \
-    libdrm.so.2 \
-    libdbus-1.so.3 \
-    libexpat.so.1 \
-    libxcb.so.1 \
-    libxkbcommon.so.0 \
-    libm.so.6 \
-    libX11.so.6 \
-    libXcomposite.so.1 \
-    libXdamage.so.1 \
-    libXext.so.6 \
-    libXfixes.so.3 \
-    libXrandr.so.2 \
-    libgbm.so.1 \
-    libpango-1.0.so.0 \
-    libcairo.so.2 \
-    libasound.so.2 \
-    libatspi.so.0 \
-    libgcc_s.so.1 \
-    libc.so.6
-    
-    # (include other libraries) && \
-RUN mkdir -p /etc/apt/keyrings && \
+    apt-get install -y --no-install-recommends software-properties-common wget git curl unzip tar nano logrotate gnupg2 apt-transport-https && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    mkdir -p /etc/apt/keyrings && \
     wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | tee /etc/apt/keyrings/adoptium.asc && \
     echo "deb [signed-by=/etc/apt/keyrings/adoptium.asc] https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print $2}' /etc/os-release) main" | tee /etc/apt/sources.list.d/adoptium.list && \
     apt-get update && \
@@ -136,4 +95,3 @@ EXPOSE $SERVER_PORT $RCON_PORT
 
 # Start the Minecraft server via the script
 CMD ["/minecraft-server/start-server.sh"]
-
