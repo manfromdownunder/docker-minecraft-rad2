@@ -22,8 +22,8 @@ mkdir -p "$BINARY_DIR"
 
 # Check if libnss3 library for ChromeDriver is installed
 if ! dpkg -l | grep -q libnss3; then
-    sudo apt-get update
-    sudo apt-get install -y libnss3
+    apt-get update
+    apt-get install -y libnss3
 fi
 
 # Install Node.js and Puppeteer
