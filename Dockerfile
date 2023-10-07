@@ -41,7 +41,7 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends $JAVA_VERSION && \
     curl -fsSL https://deb.nodesource.com/setup_14.x | bash - && \
     apt-get install -y nodejs && \
-    apt-get install -y libxfixes3 libxdamage1 libxcomposite1 libatk1.0-0 libnss3 libxss1 libasound2 libpangocairo-1.0-0 libcups2 libxrandr2 libgbm1 libatk-bridge2.0-0 libxkbcommon0 && \
+    apt-get install -y libxfixes3 libxdamage1 libxcomposite1 libatk1.0-0 libnss3 libxss1 libasound2 libpangocairo-1.0-0 libcups2 libxrandr2 libgbm1 libatk-bridge2.0-0 libxkbcommon0
 
 # Create a directory for the Minecraft server
 WORKDIR /minecraft-server
