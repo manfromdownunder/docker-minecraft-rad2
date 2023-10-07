@@ -2,7 +2,7 @@
 FROM debian:bullseye-slim
 
 # Set build-time variables
-ARG JAVA_VERSION="adoptopenjdk-8-hotspot-jre-headless"
+ARG JAVA_VERSION="temurin-8-jdk"
 
 # Set default environment variables
 ENV MINECRAFT_VERSION="1.16.5" \
@@ -31,15 +31,14 @@ ENV MINECRAFT_VERSION="1.16.5" \
     ALLOW_FLIGHT="true" \
     ALLOW_NETHER="true"
 
-# Install initial dependencies
+# Install initial dependencies and tools
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends software-properties-common wget git curl unzip tar nano logrotate gnupg2 && \
+    apt-get install -y --no-install-recommends software-properties-common wget git curl unzip tar nano logrotate gnupg2 apt-transport-https && \
     apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
-# Add Java repository and install Java
-RUN wget -qO - https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public | gpg --dearmor -o /usr/share/keyrings/adoptopenjdk-archive-keyring.gpg && \
-    echo "deb [signed-by=/usr/share/keyrings/adoptopenjdk-archive-keyring.gpg] https://adoptopenjdk.jfrog.io/adoptopenjdk/deb/ $(lsb_release -cs) main" | tee /etc/apt/sources.list.d/adoptopenjdk.list && \
+    rm -rf /var/lib/apt/lists/* && \
+    mkdir -p /etc/apt/keyrings && \
+    wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | tee /etc/apt/keyrings/adoptium.asc && \
+    echo "deb [signed-by=/etc/apt/keyrings/adoptium.asc] https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print $2}' /etc/os-release) main" | tee /etc/apt/sources.list.d/adoptium.list && \
     apt-get update && \
     apt-get install -y --no-install-recommends $JAVA_VERSION && \
     apt-get clean && \
