@@ -87,23 +87,19 @@ async function moveFiles(srcDir, destDir) {
 
                             if (directories.length === 0) {
                                 console.log('No subdirectories found. Nothing to move.');
-                            } else {
-                                const subFolderName = directories[0];
-                                const srcDir = path.join(minecraftServerPath, subFolderName);
-
-                                await moveFiles(srcDir, minecraftServerPath);
-                                console.log('Contents moved to minecraft-server root.');
-                                
-                                // Clean up: Remove the empty subdirectory and the ZIP file
-                                await fsPromises.rmdir(srcDir);
-                                await fsPromises.unlink(movedZipPath);
-                                console.log('Cleanup complete.');
+                                return;
                             }
 
-                            // Close the browser after the ZIP file has been processed
-                            await browser.close();
-                            console.log("Browser closed after ZIP download and processing. Exiting.");
-                            process.exit(0);
+                            const subFolderName = directories[0];
+                            const srcDir = path.join(minecraftServerPath, subFolderName);
+
+                            await moveFiles(srcDir, minecraftServerPath);
+                            console.log('Contents moved to minecraft-server root.');
+
+                            // Clean up: Remove the empty subdirectory and the ZIP file
+                            await fsPromises.rmdir(srcDir);
+                            await fsPromises.unlink(movedZipPath);
+                            console.log('Cleanup complete.');
                         });
                     });
                 });
@@ -118,11 +114,7 @@ async function moveFiles(srcDir, destDir) {
         await page.goto(targetURL, { timeout: 0 });
         await page.waitForTimeout(10000);
 
-        // If you get to this point without downloading, close the browser
         await browser.close();
-        console.log("Browser closed due to timeout. Exiting.");
-        process.exit(1);
-
     } catch (error) {
         console.error('An error occurred:', error);
         process.exit(1);
