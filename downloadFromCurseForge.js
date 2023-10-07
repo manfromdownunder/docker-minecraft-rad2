@@ -47,7 +47,7 @@ async function moveFiles(srcDir, destDir) {
 
         const browser = await puppeteer.launch({
             executablePath: chromePath,
-            headless: true
+            headless: true,
             args: ['--no-sandbox', '--disable-setuid-sandbox'],
         });
 
