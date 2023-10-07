@@ -34,8 +34,6 @@ ENV MINECRAFT_VERSION="1.16.5" \
 # Install initial dependencies and tools
 RUN apt-get update && \
     apt-get install -y --no-install-recommends software-properties-common wget git curl unzip tar nano logrotate gnupg2 apt-transport-https && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/* && \
     mkdir -p /etc/apt/keyrings && \
     wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | tee /etc/apt/keyrings/adoptium.asc && \
     echo "deb [signed-by=/etc/apt/keyrings/adoptium.asc] https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print $2}' /etc/os-release) main" | tee /etc/apt/sources.list.d/adoptium.list && \
@@ -44,8 +42,6 @@ RUN apt-get update && \
     curl -fsSL https://deb.nodesource.com/setup_14.x | bash - && \
     apt-get install -y nodejs && \
     apt-get install -y libxfixes3 libxdamage1 libxcomposite1 libatk1.0-0 libnss3 libxss1 libasound2 libpangocairo-1.0-0 libcups2 libxrandr2 libgbm1 libatk-bridge2.0-0 libxkbcommon0 && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
 
 # Create a directory for the Minecraft server
 WORKDIR /minecraft-server
