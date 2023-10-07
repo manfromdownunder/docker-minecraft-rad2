@@ -27,7 +27,7 @@ if ! dpkg -l | grep -q libnss3; then
 fi
 
 # Install Node.js and Puppeteer
-(
+#(
     cd "$BINARY_DIR"
 #    if ! command -v node &>/dev/null; then
 #        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
@@ -43,7 +43,7 @@ fi
     npm install unzipper
     npm install progress
 
-)
+#)
 
 # Get Chromium executable path
 export NODE_PATH="$BINARY_DIR/node_modules"
