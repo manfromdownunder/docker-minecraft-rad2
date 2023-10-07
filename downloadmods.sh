@@ -27,23 +27,22 @@ if ! dpkg -l | grep -q libnss3; then
 fi
 
 # Install Node.js and Puppeteer
-#(
+(
     cd "$BINARY_DIR"
-#    if ! command -v node &>/dev/null; then
-#        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
-#        export NVM_DIR="$HOME/.nvm"
-#        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-#        [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-#        nvm install node
-#    else
-#        echo "Node.js is already installed."
-#    fi
+    if ! command -v node &>/dev/null; then
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+        export NVM_DIR="$HOME/.nvm"
+        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+        [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+        nvm install node
+    else
+        echo "Node.js is already installed."
+    fi
     npm install puppeteer@12.0.1  --prefix "$BINARY_DIR"
     npm install puppeteer-extra puppeteer-extra-plugin-stealth
     npm install unzipper
     npm install progress
-
-#)
+)
 
 # Get Chromium executable path
 export NODE_PATH="$BINARY_DIR/node_modules"
