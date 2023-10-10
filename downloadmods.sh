@@ -31,7 +31,7 @@ fi
     export NVM_DIR="$HOME/.nvm"
     source "$NVM_DIR/nvm.sh"
 
-#    nvm install node
+    nvm install node
     npm install puppeteer@12.0.1  --prefix "$BINARY_DIR"
     npm install puppeteer-extra puppeteer-extra-plugin-stealth
     npm install unzipper
