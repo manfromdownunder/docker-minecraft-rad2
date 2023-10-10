@@ -111,9 +111,8 @@ async function moveFiles(srcDir, destDir) {
                             console.log('Cleanup complete.');
 
                             await browser.close();
-                            process.exit(0);
+                            process.exit(0); // Exit successfully
                         });
-                        request.continue();  // Moved to here after the file download
                     });
                 });
             } else {
@@ -127,7 +126,12 @@ async function moveFiles(srcDir, destDir) {
 
         await browser.close();
     } catch (error) {
-        console.error('An error occurred:', error);
-        process.exit(1);
+        if (error.message && error.message.includes("Navigation failed because browser has disconnected")) {
+            console.warn("Browser disconnected. Treating as a soft error.");
+            process.exit(0);  // Exit successfully despite the soft error
+        } else {
+            console.error('An error occurred:', error);
+            process.exit(1);  // Exit with an error code
+        }
     }
 })();
