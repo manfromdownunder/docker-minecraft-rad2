@@ -1,6 +1,12 @@
 #!/bin/bash
 set -e
 
+# Check for architecture and skip certain steps if it's ARM
+if [ "$ARCH" == "arm64" ] || [ "$ARCH" == "arm" ]; then
+    echo "ARM architecture detected, skipping downloadFromCurseForge.js"
+    exit 0
+fi
+
 # Check for file argument
 if [ "$#" -ne 1 ]; then
     echo "Usage: $0 <path_to_file_with_urls>"
@@ -64,11 +70,3 @@ while IFS= read -r DOWNLOAD_URL; do
     echo "FULL_DIR_PATH being sent to Node.js: $SCRIPT_DIR/$FOLDER_STRUCTURE"
     node "$SCRIPT_DIR/downloadFromCurseForge.js" "$DOWNLOAD_URL" "$CHROME_PATH" "$SCRIPT_DIR/$FOLDER_STRUCTURE"
 done < "$FILE_PATH"
-
-
-
-
-
-
-
-
