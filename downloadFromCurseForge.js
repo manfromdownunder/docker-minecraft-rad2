@@ -109,6 +109,8 @@ async function moveFiles(srcDir, destDir) {
                             await fsPromises.rmdir(srcDir);
                             await fsPromises.unlink(movedZipPath);
                             console.log('Cleanup complete.');
+
+                            await browser.close();
                         });
                     });
                 });
