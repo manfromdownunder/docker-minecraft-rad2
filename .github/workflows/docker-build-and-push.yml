@@ -36,6 +36,6 @@ jobs:
       with:
         context: .
         push: true
-        tags: manfromdownunder/docker-minecraft-rad2:1.7, manfromdownunder/docker-minecraft-rad2:latest, username/repository:${{ github.sha }}
+        tags: manfromdownunder/docker-minecraft-rad2:1.7, manfromdownunder/docker-minecraft-rad2:latest, manfromdownunder/docker-minecraft-rad2:${{ github.sha }}
         platforms: ${{ matrix.platform }}
         build-args: ARCH=${{ env.ARCH }}  # Pass architecture as a build argument
