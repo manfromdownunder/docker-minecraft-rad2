@@ -7,10 +7,12 @@ if [ "$#" -ne 1 ]; then
     exit 1
 fi
 
-FILE_PATH=$1
-
-# Get the directory of this script
+# Convert relative file path to absolute
+FILE_NAME="$1"
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+FILE_PATH="$SCRIPT_DIR/$FILE_NAME"
+
+echo "Looking for mods list at: $FILE_PATH"
 
 # Create a directory for npm and puppeteer/chrome files
 BINARY_DIR="$SCRIPT_DIR/binaries"
@@ -25,15 +27,11 @@ fi
 # Install Node.js and Puppeteer
 (
     cd "$BINARY_DIR"
-    if ! command -v node &>/dev/null; then
-        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
-        export NVM_DIR="$HOME/.nvm"
-        [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-        [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-        nvm install node
-    else
-        echo "Node.js is already installed."
-    fi
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+    nvm install node
     npm install puppeteer@12.0.1  --prefix "$BINARY_DIR"
     npm install puppeteer-extra puppeteer-extra-plugin-stealth
     npm install unzipper
@@ -51,14 +49,26 @@ if [ ! -d "$BINARY_DIR/node_modules/puppeteer-extra" ]; then
 fi
 
 # Read URLs from the file and download sequentially
+if [ ! -f "$FILE_PATH" ]; then
+    echo "File does not exist or is not readable. Exiting."
+    exit 1
+fi
+
+echo "About to enter while loop, reading from file: $FILE_PATH"
+
 while IFS= read -r DOWNLOAD_URL; do
-    # Remove the "https://www.curseforge.com" prefix from the URL
+    echo "Processing URL: $DOWNLOAD_URL"
     FOLDER_STRUCTURE="${DOWNLOAD_URL#https://www.curseforge.com/}"
-
-    # Create the directory, including parent directories as needed
     mkdir -p "$SCRIPT_DIR/$FOLDER_STRUCTURE"
-
     echo "About to run Node.js script with CHROME_PATH: $CHROME_PATH"
     echo "FULL_DIR_PATH being sent to Node.js: $SCRIPT_DIR/$FOLDER_STRUCTURE"
     node "$SCRIPT_DIR/downloadFromCurseForge.js" "$DOWNLOAD_URL" "$CHROME_PATH" "$SCRIPT_DIR/$FOLDER_STRUCTURE"
 done < "$FILE_PATH"
+
+
+
+
+
+
+
+
