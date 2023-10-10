@@ -31,4 +31,4 @@ jobs:
         context: .  # The Docker context is the root of the repository
         push: true
         tags: manfromdownunder/docker-minecraft-rad2:1.7, manfromdownunder/docker-minecraft-rad2:latest, username/repository:${{ github.sha }}  # Replace with your Docker Hub username, repository name, and tag
-        platforms: linux/amd64,linux/arm64,linux/arm/v7  # Add more platforms if needed
+        platforms: linux/amd64 # Add more platforms if needed
