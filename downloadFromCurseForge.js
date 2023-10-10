@@ -111,6 +111,7 @@ async function moveFiles(srcDir, destDir) {
                             console.log('Cleanup complete.');
 
                             await browser.close();
+                            process.exit(0);
                         });
                     });
                 });
