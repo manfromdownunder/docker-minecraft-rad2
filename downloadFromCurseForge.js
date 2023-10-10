@@ -10,6 +10,8 @@ const unzipper = require('unzipper');
 
 puppeteer.use(StealthPlugin());
 
+let isDownloadStarted = false;  // Flag to know if download has started
+
 async function unzipFile(filePath, destDir) {
     return new Promise((resolve, reject) => {
         fs.createReadStream(filePath)
@@ -61,7 +63,14 @@ async function moveFiles(srcDir, destDir) {
         let movedZipPath = '';  // Store moved ZIP path for deletion later
 
         page.on('request', async (request) => {
+            if (isDownloadStarted) {
+                request.abort();  // Abort all new requests once download starts
+                return;
+            }
+
             if (request.url().endsWith('.zip')) {
+                isDownloadStarted = true;  // Set the flag here
+
                 const urlParts = new URL(request.url());
                 const fileName = path.basename(urlParts.pathname);
                 const downloadPath = path.join(folderStructure, fileName);
