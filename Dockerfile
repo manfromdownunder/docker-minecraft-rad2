@@ -50,7 +50,7 @@ RUN apt-get update && \
     cp docker-minecraft-rad2/downloadmods.sh . && \
     cp docker-minecraft-rad2/modslist.txt . && \
     cp docker-minecraft-rad2/downloadFromCurseForge.js . && \
-    cp docker-minecraft-rad2/start-server.sh . && \
+    cp docker-minecraft-rad2/start-server.sh minecraft-server/ && \
     chmod +x /minecraft-server/start-server.sh && \
     chmod +x /minecraft-server/downloadmods.sh && \
     ./downloadmods.sh modslist.txt && \
@@ -74,7 +74,7 @@ RUN apt-get update && \
         echo "view-distance=${VIEW_DISTANCE}"; \
         echo "allow-flight=${ALLOW_FLIGHT}"; \
         echo "allow-nether=${ALLOW_NETHER}"; \
-    } > server.properties
+    } > minecraft-server/server.properties
 
 # Expose the Minecraft server port and RCON port
 EXPOSE $SERVER_PORT $RCON_PORT
