@@ -29,9 +29,9 @@ fi
     cd "$BINARY_DIR"
     curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
     export NVM_DIR="$HOME/.nvm"
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
-    nvm install node
+    source "$NVM_DIR/nvm.sh"
+
+#    nvm install node
     npm install puppeteer@12.0.1  --prefix "$BINARY_DIR"
     npm install puppeteer-extra puppeteer-extra-plugin-stealth
     npm install unzipper
