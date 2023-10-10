@@ -10,7 +10,7 @@ const unzipper = require('unzipper');
 
 puppeteer.use(StealthPlugin());
 
-let isDownloadStarted = false;  // Flag to know if download has started
+let isDownloadStarted = false;
 
 async function unzipFile(filePath, destDir) {
     return new Promise((resolve, reject) => {
@@ -19,16 +19,6 @@ async function unzipFile(filePath, destDir) {
             .on('close', resolve)
             .on('error', reject);
     });
-}
-
-async function moveFiles(srcDir, destDir) {
-    const files = await fsPromises.readdir(srcDir);
-    const movePromises = files.map(file => {
-        const srcPath = path.join(srcDir, file);
-        const destPath = path.join(destDir, file);
-        return fsPromises.rename(srcPath, destPath);
-    });
-    return Promise.all(movePromises);
 }
 
 (async () => {
@@ -40,8 +30,12 @@ async function moveFiles(srcDir, destDir) {
 
         const targetURL = process.argv[2];
         const chromePath = process.argv[3];
-        const folderStructure = process.argv[4] || ".";
-        const minecraftServerPath = path.join(__dirname, 'minecraft-server');
+        const folderStructure = path.join(__dirname, '/minecraft');
+        const minecraftServerPath = path.join(__dirname, '/minecraft/server');
+
+        if (!fs.existsSync(folderStructure)) {
+            fs.mkdirSync(folderStructure);
+        }
 
         if (!fs.existsSync(minecraftServerPath)) {
             fs.mkdirSync(minecraftServerPath);
@@ -55,21 +49,16 @@ async function moveFiles(srcDir, destDir) {
 
         const page = await browser.newPage();
 
-        await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/53');
-        await page.setViewport({ width: 1366, height: 768 });
-
         await page.setRequestInterception(true);
-
-        let movedZipPath = '';  // Store moved ZIP path for deletion later
 
         page.on('request', async (request) => {
             if (isDownloadStarted) {
-                request.abort();  // Abort all new requests once download starts
+                request.abort();
                 return;
             }
 
             if (request.url().endsWith('.zip')) {
-                isDownloadStarted = true;  // Set the flag here
+                isDownloadStarted = true;
 
                 const urlParts = new URL(request.url());
                 const fileName = path.basename(urlParts.pathname);
@@ -84,39 +73,23 @@ async function moveFiles(srcDir, destDir) {
                             console.log('Download complete');
                             console.log('DownloadedFilePath:', downloadPath);
 
-                            movedZipPath = path.join(minecraftServerPath, fileName);
+                            const movedZipPath = path.join(minecraftServerPath, fileName);
                             await fsPromises.rename(downloadPath, movedZipPath);
-                            console.log('ZIP moved to minecraft-server');
+                            console.log('ZIP moved to /minecraft/server');
 
                             await unzipFile(movedZipPath, minecraftServerPath);
                             console.log('Unzip complete');
 
-                            const directories = await fsPromises.readdir(minecraftServerPath, { withFileTypes: true })
-                                .then(dirs => dirs.filter(d => d.isDirectory()).map(d => d.name));
-
-                            if (directories.length === 0) {
-                                console.log('No subdirectories found. Nothing to move.');
-                                return;
-                            }
-
-                            const subFolderName = directories[0];
-                            const srcDir = path.join(minecraftServerPath, subFolderName);
-
-                            await moveFiles(srcDir, minecraftServerPath);
-                            console.log('Contents moved to minecraft-server root.');
-
-                            // Clean up: Remove the empty subdirectory and the ZIP file
-                            await fsPromises.rmdir(srcDir);
+                            // Clean up: Remove the ZIP file
                             await fsPromises.unlink(movedZipPath);
                             console.log('Cleanup complete.');
 
                             await browser.close();
-                            process.exit(0); // Exit successfully
+                            process.exit(0);
                         });
                     });
                 });
             } else {
-                console.log("Request URL:", request.url());
                 request.continue();
             }
         });
@@ -128,10 +101,10 @@ async function moveFiles(srcDir, destDir) {
     } catch (error) {
         if (error.message && error.message.includes("Navigation failed because browser has disconnected")) {
             console.warn("Browser disconnected. Treating as a soft error.");
-            process.exit(0);  // Exit successfully despite the soft error
+            process.exit(0);
         } else {
             console.error('An error occurred:', error);
-            process.exit(1);  // Exit with an error code
+            process.exit(1);
         }
     }
 })();

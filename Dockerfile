@@ -32,8 +32,8 @@ ENV EULA_ACCEPT="true" \
     ALLOW_FLIGHT="true" \
     ALLOW_NETHER="true"
 
-# Create a directory for the Minecraft server
-WORKDIR /server
+# Create a directory for Minecraft
+WORKDIR /minecraft
 
 # Install initial dependencies and tools
 RUN apt-get update && \
@@ -47,14 +47,19 @@ RUN apt-get update && \
     curl -sL https://deb.nodesource.com/setup_14.x | bash - && \
     apt-get install -y nodejs && \
     git clone https://github.com/manfromdownunder/docker-minecraft-rad2.git && \
-    cp docker-minecraft-rad2/downloadmods.sh . && \
-    cp docker-minecraft-rad2/modslist.txt . && \
-    cp docker-minecraft-rad2/downloadFromCurseForge.js . && \
-    cp docker-minecraft-rad2/start-server.sh . && \
-    chmod +x minecraft-server/start-server.sh && \
-    chmod +x minecraft-server/downloadmods.sh && \
-    ./downloadmods.sh modslist.txt && \
-    echo "eula=${EULA_ACCEPT}" > eula.txt && \
+    cp docker-minecraft-rad2/downloadmods.sh ./downloadmods.sh && \
+    cp docker-minecraft-rad2/modslist.txt ./modslist.txt && \
+    cp docker-minecraft-rad2/downloadFromCurseForge.js ./downloadFromCurseForge.js && \
+    cp docker-minecraft-rad2/start-server.sh ./start-server.sh && \
+    chmod +x ./start-server.sh && \
+    chmod +x ./downloadmods.sh && \
+    ./downloadmods.sh modslist.txt
+
+# Change to the server directory inside the main Minecraft directory
+WORKDIR /minecraft/server
+
+# Generate eula.txt and server.properties with explicit paths
+RUN echo "eula=${EULA_ACCEPT}" > /minecraft/server/eula.txt && \
     { \
         echo "enable-rcon=${RCON_ENABLED}"; \
         echo "rcon.password=${RCON_PASSWORD}"; \
@@ -74,10 +79,10 @@ RUN apt-get update && \
         echo "view-distance=${VIEW_DISTANCE}"; \
         echo "allow-flight=${ALLOW_FLIGHT}"; \
         echo "allow-nether=${ALLOW_NETHER}"; \
-    } > /server/minecraft-server/server.properties
+    } > /minecraft/server/server.properties
 
 # Expose the Minecraft server port and RCON port
 EXPOSE $SERVER_PORT $RCON_PORT
 
 # Start the Minecraft server via the script
-CMD ["/minecraft-server/start-server.sh"]
+CMD ["/minecraft/server/start-server.sh"]
