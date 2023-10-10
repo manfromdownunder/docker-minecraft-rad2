@@ -1,11 +1,12 @@
-# Use a minimal Debian base image
+# Use a specific Debian base image for reproducibility
 FROM debian:bullseye-slim
 
 # Set build-time variables
 ARG JAVA_VERSION="temurin-8-jdk"
 
-# Set default environment variables
-ENV MINECRAFT_VERSION="1.16.5" \
+# Set default environment variables including EULA_ACCEPT
+ENV EULA_ACCEPT="true" \
+    MINECRAFT_VERSION="1.16.5" \
     SERVER_PORT="25565" \
     MODPACK_URL="https://www.curseforge.com/minecraft/modpacks/roguelike-adventures-and-dungeons-2" \
     JAVA_MEMORY_MAX="10000m" \
@@ -36,10 +37,10 @@ WORKDIR /minecraft-server
 
 # Install initial dependencies and tools
 RUN apt-get update && \
+    apt-get install -y --no-install-recommends software-properties-common wget git curl unzip tar nano logrotate gnupg2 apt-transport-https && \
     mkdir -p /etc/apt/keyrings && \
     wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | tee /etc/apt/keyrings/adoptium.asc && \
     echo "deb [signed-by=/etc/apt/keyrings/adoptium.asc] https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print $2}' /etc/os-release) main" | tee /etc/apt/sources.list.d/adoptium.list && \
-    apt-get install -y --no-install-recommends software-properties-common wget git curl unzip tar nano logrotate gnupg2 apt-transport-https && \
     apt-get update && \
     apt-get install -y --no-install-recommends $JAVA_VERSION && \
     apt-get install -y libxfixes3 libxdamage1 libxcomposite1 libatk1.0-0 libnss3 libxss1 libasound2 libpangocairo-1.0-0 libcups2 libxrandr2 libgbm1 libatk-bridge2.0-0 libxkbcommon0 && \
@@ -51,7 +52,7 @@ RUN apt-get update && \
     chmod +x /minecraft-server/start-server.sh && \
     chmod +x /minecraft-server/downloadmods.sh && \
     ./downloadmods.sh modslist.txt && \
-    echo "eula=true" > eula.txt && \
+    echo "eula=${EULA_ACCEPT}" > eula.txt && \
     { \
         echo "enable-rcon=${RCON_ENABLED}"; \
         echo "rcon.password=${RCON_PASSWORD}"; \

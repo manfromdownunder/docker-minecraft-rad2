@@ -12,18 +12,14 @@ FILE_PATH=$1
 # Get the directory of this script
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-# Create a directory for the Minecraft server within the script directory
-MINECRAFT_SERVER_DIR="$SCRIPT_DIR/minecraft-server"
-mkdir -p "$MINECRAFT_SERVER_DIR"
-
 # Create a directory for npm and puppeteer/chrome files
 BINARY_DIR="$SCRIPT_DIR/binaries"
 mkdir -p "$BINARY_DIR"
 
 # Check if libnss3 library for ChromeDriver is installed
 if ! dpkg -l | grep -q libnss3; then
-    apt-get update
-    apt-get install -y libnss3
+    sudo apt-get update
+    sudo apt-get install -y libnss3
 fi
 
 # Install Node.js and Puppeteer
@@ -41,7 +37,6 @@ fi
     npm install puppeteer@12.0.1  --prefix "$BINARY_DIR"
     npm install puppeteer-extra puppeteer-extra-plugin-stealth
     npm install unzipper
-    npm install progress
 )
 
 # Get Chromium executable path
@@ -65,8 +60,5 @@ while IFS= read -r DOWNLOAD_URL; do
 
     echo "About to run Node.js script with CHROME_PATH: $CHROME_PATH"
     echo "FULL_DIR_PATH being sent to Node.js: $SCRIPT_DIR/$FOLDER_STRUCTURE"
-    
-    # Run the Node.js script for download (unzip will be handled by Node.js script)
     node "$SCRIPT_DIR/downloadFromCurseForge.js" "$DOWNLOAD_URL" "$CHROME_PATH" "$SCRIPT_DIR/$FOLDER_STRUCTURE"
-    
 done < "$FILE_PATH"
