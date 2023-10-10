@@ -21,6 +21,27 @@ async function unzipFile(filePath, destDir) {
     });
 }
 
+async function moveFilesFromSubfolder(destDir) {
+    const dirs = await fsPromises.readdir(destDir, { withFileTypes: true });
+    const subfolderDirent = dirs.find(dirent => dirent.isDirectory());
+    if (!subfolderDirent) {
+        console.error('No subfolder found in destination directory.');
+        return;
+    }
+    
+    const subfolderPath = path.join(destDir, subfolderDirent.name);
+    const files = await fsPromises.readdir(subfolderPath);
+    
+    for (const file of files) {
+        const fromPath = path.join(subfolderPath, file);
+        const toPath = path.join(destDir, file);
+        await fsPromises.rename(fromPath, toPath);
+    }
+
+    // Remove the now-empty subfolder
+    await fsPromises.rmdir(subfolderPath, { recursive: true });
+}
+
 (async () => {
     try {
         if (process.argv.length < 4) {
@@ -48,7 +69,6 @@ async function unzipFile(filePath, destDir) {
         });
 
         const page = await browser.newPage();
-
         await page.setRequestInterception(true);
 
         page.on('request', async (request) => {
@@ -73,15 +93,14 @@ async function unzipFile(filePath, destDir) {
                             console.log('Download complete');
                             console.log('DownloadedFilePath:', downloadPath);
 
-                            const movedZipPath = path.join(minecraftServerPath, fileName);
-                            await fsPromises.rename(downloadPath, movedZipPath);
-                            console.log('ZIP moved to /minecraft/server');
-
-                            await unzipFile(movedZipPath, minecraftServerPath);
+                            await unzipFile(downloadPath, minecraftServerPath);
                             console.log('Unzip complete');
 
+                            await moveFilesFromSubfolder(minecraftServerPath);
+                            console.log('Files moved to /minecraft/server');
+
                             // Clean up: Remove the ZIP file
-                            await fsPromises.unlink(movedZipPath);
+                            await fsPromises.unlink(downloadPath);
                             console.log('Cleanup complete.');
 
                             await browser.close();
