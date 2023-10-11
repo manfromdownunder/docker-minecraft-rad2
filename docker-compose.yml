@@ -40,4 +40,4 @@ services:
 #      - ./control/banned-ips.json:/minecraft/server/banned-ips.json
 #      - ./control/banned-players.json:/minecraft/server/banned-players.json
 #      - ./control/whitelist.json:/minecraft/server/whitelist.json
-      - ./start-server.sh:/minecraft/server/start-server.sh
+#      - ./start-server.sh:/minecraft/server/start-server.sh
