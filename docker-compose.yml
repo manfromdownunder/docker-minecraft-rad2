@@ -35,6 +35,7 @@ services:
       ALLOW_NETHER: "true"
     volumes:
       - ./world:/minecraft/server/world
+      - ./world:/minecraft/server/backups
       - ./logs:/minecraft/server/logs
       - ./control/ops.json:/minecraft/server/ops.json
 #      - ./control/banned-ips.json:/minecraft/server/banned-ips.json
