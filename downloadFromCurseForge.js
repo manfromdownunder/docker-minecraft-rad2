@@ -51,8 +51,8 @@ async function moveFilesFromSubfolder(destDir) {
 
         const targetURL = process.argv[2];
         const chromePath = process.argv[3];
-        const folderStructure = path.join(__dirname, '/minecraft');
-        const minecraftServerPath = path.join(__dirname, '/minecraft/server');
+        const folderStructure = '/minecraft';
+        const minecraftServerPath = '/minecraft/server';
 
         if (!fs.existsSync(folderStructure)) {
             fs.mkdirSync(folderStructure);
