@@ -50,8 +50,8 @@ RUN apt-get update && \
     cp docker-minecraft-rad2/downloadmods.sh ./downloadmods.sh && \
     cp docker-minecraft-rad2/modslist.txt ./modslist.txt && \
     cp docker-minecraft-rad2/downloadFromCurseForge.js ./downloadFromCurseForge.js && \
-    cp docker-minecraft-rad2/start-server.sh ./server/start-server.sh && \
-    chmod +x ./server/start-server.sh && \
+    cp docker-minecraft-rad2/start-server.sh ../server/start-server.sh && \
+    chmod +x ../server/start-server.sh && \
     chmod +x ./downloadmods.sh && \
     ./downloadmods.sh modslist.txt
 
