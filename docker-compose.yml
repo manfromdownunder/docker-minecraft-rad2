@@ -37,7 +37,7 @@ services:
       - ./world:/minecraft/server/world
       - ./logs:/minecraft/server/logs
       - ./control/ops.json:/minecraft/server/ops.json
-      - ./control/banned-ips.json:/minecraft/server/banned-ips.json
-      - ./control/banned-players.json:/minecraft/server/banned-players.json
-      - ./control/whitelist.json:/minecraft/server/whitelist.json
+#      - ./control/banned-ips.json:/minecraft/server/banned-ips.json
+#      - ./control/banned-players.json:/minecraft/server/banned-players.json
+#      - ./control/whitelist.json:/minecraft/server/whitelist.json
       - ./start-server.sh:/minecraft/server/start-server.sh
