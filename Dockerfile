@@ -33,6 +33,7 @@ ENV EULA_ACCEPT="true" \
     ALLOW_NETHER="true"
 
 # Create a directory for Minecraft
+WORKDIR /minecraft/server
 WORKDIR /minecraft
 
 # Install initial dependencies and tools
