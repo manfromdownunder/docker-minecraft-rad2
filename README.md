@@ -1,5 +1,5 @@
 # docker-minecraft-rad2
-Roguelike Adventures and Dungeons 2
+# Roguelike Adventures and Dungeons 2
 
 This is a docker image for [Roguelike Adventures and Dungeons 2](https://www.curseforge.com/minecraft/modpacks/roguelike-adventures-and-dungeons-2)
 
@@ -17,7 +17,7 @@ The architectures supported by this image are:
 
 ## Usage
 
-To help you get started creating a container from this image you can either use docker-compose or the docker cli.
+To help you get started creating a container from this image you can either use docker-compose.
 
 ### docker-compose
 
