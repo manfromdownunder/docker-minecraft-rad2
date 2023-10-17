@@ -1,4 +1,4 @@
-name: Build and Push Docker Image
+name: Code Scanning and Build and Push Docker Image
 
 on:
   push:
@@ -6,11 +6,27 @@ on:
       - main  # Trigger the workflow on push to the main branch
 
 jobs:
+  code-scanning:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Initialize CodeQL
+      uses: github/codeql-action/init@v1
+      with:
+        languages: "java, dockerfile, shell"  # Scan Java, Dockerfile, and Shell files
+
+    - name: Perform CodeQL Analysis
+      uses: github/codeql-action/analyze@v1
+
   build-and-push:
+    needs: code-scanning  # Only proceed if code-scanning passes
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        platform: [linux/amd64]  # Only amd64 platform is listed here
+        platform: [linux/amd64]
     
     steps:
     - name: Checkout code
@@ -25,30 +41,14 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_TOKEN }}
 
-    - name: Log in to GitHub Container Registry
-      uses: docker/login-action@v1.9.0
-      with:
-        registry: ghcr.io
-        username: ${{ github.repository_owner }}
-        password: ${{ secrets.GHCR_TOKEN }}
-
     - name: Determine architecture
       run: echo "ARCH=$(echo ${{ matrix.platform }} | cut -d/ -f2)" >> $GITHUB_ENV
 
-    - name: Build and push Docker image to Docker Hub
+    - name: Build and push Docker image
       uses: docker/build-push-action@v2
       with:
         context: .
         push: true
         tags: manfromdownunder/docker-minecraft-rad2:1.7, manfromdownunder/docker-minecraft-rad2:latest, manfromdownunder/docker-minecraft-rad2:${{ github.sha }}
-        platforms: ${{ matrix.platform }}
-        build-args: ARCH=${{ env.ARCH }}
-
-    - name: Build and push Docker image to GitHub Container Registry
-      uses: docker/build-push-action@v2
-      with:
-        context: .
-        push: true
-        tags: ghcr.io/${{ github.repository_owner }}/docker-minecraft-rad2:1.7, ghcr.io/${{ github.repository_owner }}/docker-minecraft-rad2:latest, ghcr.io/${{ github.repository_owner }}/docker-minecraft-rad2:${{ github.sha }}
         platforms: ${{ matrix.platform }}
         build-args: ARCH=${{ env.ARCH }}
