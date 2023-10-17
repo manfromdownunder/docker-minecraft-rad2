@@ -3,7 +3,7 @@ name: Build and Push Docker Image
 on:
   push:
     branches:
-      - main  # Trigger the workflow on push to the main branch
+      - main
 
 jobs:
   build-and-push:
@@ -39,4 +39,4 @@ jobs:
         push: true
         tags: manfromdownunder/docker-minecraft-rad2:1.7, manfromdownunder/docker-minecraft-rad2:latest, manfromdownunder/docker-minecraft-rad2:${{ github.sha }}
         platforms: ${{ matrix.platform }}
-        build-args: ARCH=${{ env.ARCH }}  # Pass architecture as a build argument
+        build-args: ARCH=${{ env.ARCH }}
