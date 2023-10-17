@@ -1,5 +1,4 @@
-# docker-minecraft-rad2
-# Roguelike Adventures and Dungeons 2
+# Minecaft Roguelike Adventures and Dungeons 2
 
 This is a docker image for [Roguelike Adventures and Dungeons 2](https://www.curseforge.com/minecraft/modpacks/roguelike-adventures-and-dungeons-2)
 
