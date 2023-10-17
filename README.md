@@ -12,7 +12,7 @@ The architectures supported by this image are:
 | Architecture | Available | Tag |
 | :----: | :----: | ---- |
 | arm64 | ✅ | arm64v8-\<version tag\> |
-| armhf | ❌ | |
+| armhf | ❌ |  |
 
 ## Usage
 
