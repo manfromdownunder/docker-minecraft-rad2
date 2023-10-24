@@ -19,12 +19,16 @@ start_server(){
 
 # Function to send countdown warnings to players
 send_countdown(){
-  for i in 5 4 3 2 1; do
+  for i in 5 4 3 2; do
     send_rcon "say Server is $1 in $i minutes!"
     sleep 60
   done
-  send_rcon "say Server is $1 in 30 seconds!"
+  send_rcon "say Server is $1 in 60 seconds."
   sleep 30
+  send_rcon "say Server is $1 in 30 seconds. Please log out now"
+  sleep 25
+  send_rcon "say Server is $1 in 5 seconds. Please log out now"
+  sleep 5
   send_rcon "say Server is $1 now!"
 }
 
