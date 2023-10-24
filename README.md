@@ -17,22 +17,16 @@ The architectures supported by this image are:
 ## Usage
 You must install docker and docker-compose first and confirm it is working. Then follow the steps below to fire up your server. ** Don't forget to change passwords in the docker-compose.yml.  
 
-1. Clone this repo locally
-```git clone https://github.com/manfromdownunder/docker-minecraft-rad2.git```
-
-2. Change directory to the cloned repository
-```cd docker-minecraft-rad2```
-
-3. Create the docker-compose.yml
+1. Create the docker-compose.yml
 ```sudo nano docker-compose.yml```
 
-4. Copy paste the example docker compose below into the docker-compose.yml then save
+2. Copy paste the example docker compose below into the docker-compose.yml then save
 ```Ctrl + O to write the file, then Ctrl + X to close the file```
 
-5. Start the container
+3. Start the container
 ```docker-compose -f docker-compose.yml -d```
 
-To help you get started creating a container from this image use docker-compose.
+4. The server can take ~5 minutes to start so be patient
 
 ## docker-compose
 
