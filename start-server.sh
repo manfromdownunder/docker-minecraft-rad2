@@ -19,11 +19,11 @@ send_countdown(){
     send_rcon "say Server is $1 in $i minutes!"
     sleep 60
   done
-  send_rcon "say Server is $1 in 60 seconds."
+  send_rcon "say Server is $1 in 60 seconds. Get up and have a stretch, have some water and some fresh air. Back in 5 mins"
   sleep 30
-  send_rcon "say Server is $1 in 30 seconds. Please log out now!"
+  send_rcon "say Server is $1 in 30 seconds. Please log out now"
   sleep 25
-  send_rcon "say Server is $1 in 5 seconds. Please log out now!"
+  send_rcon "say Server is $1 in 5 seconds. Last warning.  Please log out now and reconnect in 5 minutes "
   sleep 5
   send_rcon "say Server is $1 now!"
 }
