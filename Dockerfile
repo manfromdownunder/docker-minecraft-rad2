@@ -30,6 +30,7 @@ ENV EULA_ACCEPT="true" \
     SNOOPER_ENABLED="true" \
     VIEW_DISTANCE="7" \
     ALLOW_FLIGHT="true" \
+    RESTART_INTERVAL="0 */6 * * *" \
     ALLOW_NETHER="true"
 
 # Create a directory for Minecraft
@@ -56,7 +57,7 @@ RUN apt-get update && \
     chmod +x /minecraft/server/start-server.sh && \
     chmod +x ./downloadmods.sh && \
     chmod +x /minecraft/server/restart-server.sh && \
-    echo "0 */6 * * * /minecraft/server/restart-server.sh >> /minecraft/server/logs/restart-server.log 2>&1" > /etc/cron.d/restart-server && \
+    echo "${RESTART_INTERVAL} /minecraft/server/restart-server.sh >> /minecraft/server/logs/restart-server.log 2>&1" > /etc/cron.d/restart-server && \
     chmod 0644 /etc/cron.d/restart-server && \
     crontab /etc/cron.d/restart-server && \
     touch /var/log/restart-server.log && \

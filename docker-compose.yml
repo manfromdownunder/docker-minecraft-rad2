@@ -35,6 +35,7 @@ services:
       VIEW_DISTANCE: "7"
       ALLOW_FLIGHT: "true"
       ALLOW_NETHER: "true"
+      RESTART_INTERVAL: "0 */4 * * *"
     volumes:
       - ./world:/minecraft/server/world
       - ./world:/minecraft/server/backups
