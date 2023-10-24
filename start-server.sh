@@ -1,17 +1,47 @@
 #!/bin/bash
 
+# Create a named pipe
+PIPE="/tmp/mc-input"
+
+# Remove the pipe if it already exists
+if [ -p "$PIPE" ]; then
+  rm -f $PIPE
+fi
+
+# Create the pipe
+mkfifo $PIPE
+
 # Function to start the Minecraft server
 start_server(){
   echo "Starting Minecraft server."
-  java -Xmx${JAVA_MEMORY_MAX} -Xms${JAVA_MEMORY_MIN} -XX:PermSize=${JAVA_PERM_SIZE} -jar /minecraft/server/forge-${MINECRAFT_VERSION}-${FORGE_VERSION}.jar nogui &
+  
+  # Open the pipe for reading in the background
+  cat $PIPE &
+
+  # Start the Minecraft server
+  java -Xmx${JAVA_MEMORY_MAX} -Xms${JAVA_MEMORY_MIN} -XX:PermSize=${JAVA_PERM_SIZE} -jar /minecraft/server/forge-${MINECRAFT_VERSION}-${FORGE_VERSION}.jar nogui | tee -a /minecraft/ser>
+  
   MINECRAFT_PID=$!
+}
+
+# Function to send countdown warnings to players
+send_countdown(){
+  for i in 5 4 3 2 1; do
+    echo "say Server is $1 in $i minutes!" > $PIPE
+    sleep 60
+  done
+  echo "say Server is $1 in 30 seconds!" > $PIPE
+  sleep 30
+  echo "say Server is $1 now!" > $PIPE
 }
 
 # Function to gracefully stop the Minecraft server
 stop_server(){
   echo "Stopping Minecraft server."
+  send_countdown "shutting down"
   if [ ! -z "$MINECRAFT_PID" ]; then
     kill -SIGTERM "$MINECRAFT_PID"
+    wait $MINECRAFT_PID
   fi
 }
 
@@ -38,6 +68,7 @@ while true; do
   if [ -e autostart.stamp ]; then
     echo "autostart.stamp found. Restarting server."
     rm -f autostart.stamp
+    send_countdown "restarting"
     stop_server
     sleep 5  # Wait for the server to shut down completely
     start_server
@@ -45,5 +76,5 @@ while true; do
   fi
 done
 
-# Keep script running to maintain trap
-wait $!
+# Cleanup
+rm -f $PIPE
