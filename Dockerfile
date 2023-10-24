@@ -60,6 +60,11 @@ RUN apt-get update && \
     chmod 0644 /etc/cron.d/restart-server && \
     crontab /etc/cron.d/restart-server && \
     touch /var/log/restart-server.log && \
+    wget https://github.com/Tiiffi/mcrcon/archive/v0.0.5.tar.gz && \
+    tar -xzvf v0.0.5.tar.gz && \
+    cd mcrcon-0.0.5 && \
+    make && \
+    make install && \
     ./downloadmods.sh modslist.txt
 
 # Change to the server directory inside the main Minecraft directory
