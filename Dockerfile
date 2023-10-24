@@ -55,7 +55,7 @@ RUN apt-get update && \
     cp docker-minecraft-rad2/restart-server.sh /minecraft/server/restart-server.sh && \
     chmod +x /minecraft/server/start-server.sh && \
     chmod +x ./downloadmods.sh && \
-    chmod +x /usr/local/bin/restart-server.sh && \
+    chmod +x /minecraft/server/restart-server.sh && \
     echo "0 */6 * * * /minecraft/server/restart-server.sh >> /minecraft/server/logs/restart-server.log 2>&1" > /etc/cron.d/restart-server && \
     chmod 0644 /etc/cron.d/restart-server && \
     crontab /etc/cron.d/restart-server && \
