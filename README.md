@@ -15,10 +15,26 @@ The architectures supported by this image are:
 | armhf | ❌ |  |
 
 ## Usage
+You must install docker and docker-compose first and confirm it is working. Then follow the steps below to fire up your server. ** Don't forget to change passwords in the docker-compose.yml.  
 
-To help you get started creating a container from this image you can either use docker-compose.
+1. Clone this repo locally
+```git clone https://github.com/manfromdownunder/docker-minecraft-rad2.git```
 
-### docker-compose
+2. Change directory to the cloned repository
+```cd docker-minecraft-rad2```
+
+3. Create the docker-compose.yml
+```sudo nano docker-compose.yml```
+
+4. Copy paste the example docker compose below into the docker-compose.yml then save
+```Ctrl + O to write the file, then Ctrl + X to close the file```
+
+5. Start the container
+```docker-compose -f docker-compose.yml -d```
+
+To help you get started creating a container from this image use docker-compose.
+
+## docker-compose
 
 ```yaml
 ---
@@ -27,11 +43,13 @@ version: '3'
 services:
   rad2_server:
     image: manfromdownunder/docker-minecraft-rad2:latest
+    # command: tail -f /dev/null # debug the container
+    container_name: minecraft-rad2-server
     ports:
       - "25565:25565"
       - "25575:25575"
     environment:
-      EULA_ACCEPT: "false" #set to true if you accept the EULA
+      EULA_ACCEPT: "true"
       MINECRAFT_VERSION: "1.16.5"
       SERVER_PORT: "25565"
       MODPACK_URL: "https://www.curseforge.com/minecraft/modpacks/roguelike-adventures-and-dungeons-2"
@@ -57,12 +75,26 @@ services:
       VIEW_DISTANCE: "7"
       ALLOW_FLIGHT: "true"
       ALLOW_NETHER: "true"
+      RESTART_INTERVAL: "0 */4 * * *"
     volumes:
       - ./world:/minecraft/server/world
       - ./world:/minecraft/server/backups
       - ./logs:/minecraft/server/logs
       - ./control/ops.json:/minecraft/server/ops.json
+#      - ./control/banned-ips.json:/minecraft/server/banned-ips.json
+#      - ./control/banned-players.json:/minecraft/server/banned-players.json
+#      - ./control/whitelist.json:/minecraft/server/whitelist.json
+#      - ./start-server.sh:/minecraft/server/start-server.sh # uncomment this line to customize the startup script
 ```
+
+## minecraft docker commands
+Manually initiate a server restart
+```docker exec -it minecraft-rad2-server touch /minecraft/server/autostart.stamp```
+
+Manually initiate a server shutdown
+```docker exec -it minecraft-rad2-server touch /minecraft/server/autostop.stamp```
+
+
 
 ## Versions
 
