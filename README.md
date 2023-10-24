@@ -11,8 +11,8 @@ The architectures supported by this image are:
 
 | Architecture | Available | Tag |
 | :----: | :----: | ---- |
-| arm64 | ✅ | arm64v8-\<version tag\> |
-| armhf | ❌ |  |
+| amd64 | ✅ | docker-minecraft-rad2:latest |
+
 
 ## Usage
 You must install docker and docker-compose first and confirm it is working. Then follow the steps below to fire up your server. ** Don't forget to change passwords in the docker-compose.yml.  
