@@ -63,8 +63,8 @@ RUN apt-get update && \
     wget https://github.com/Tiiffi/mcrcon/archive/v0.0.5.tar.gz && \
     tar -xzvf v0.0.5.tar.gz && \
     cd mcrcon-0.0.5 && \
-    make && \
-    make install && \
+    gcc -o mcrcon mcrcon.c && \
+    mv mcrcon /usr/local/bin && \
     ./downloadmods.sh modslist.txt
 
 # Change to the server directory inside the main Minecraft directory
