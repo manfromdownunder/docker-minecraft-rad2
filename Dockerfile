@@ -60,7 +60,6 @@ RUN apt-get update && \
     chmod 0644 /etc/cron.d/restart-server && \
     crontab /etc/cron.d/restart-server && \
     touch /var/log/restart-server.log && \
-    cron && tail -f /var/log/restart-server.log && \
     ./downloadmods.sh modslist.txt
 
 # Change to the server directory inside the main Minecraft directory
