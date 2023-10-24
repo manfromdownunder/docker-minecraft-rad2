@@ -1,1 +1,0 @@
-0 */6 * * * /minecraft/server/restart_server.sh >> /var/log/restart_server.log 2>&1
