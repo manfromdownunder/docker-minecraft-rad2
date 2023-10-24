@@ -13,6 +13,10 @@ The architectures supported by this image are:
 | :----: | :----: | ---- |
 | amd64 | ✅ | docker-minecraft-rad2:latest |
 
+## Hardware requirements
+For 5-10 Players:
+- Minimum 10GB RAM
+- Minimum 4 cores @ 2.4Ghz
 
 ## Usage
 You must install docker and docker-compose first and confirm it is working. Then follow the steps below to fire up your server. ** Don't forget to change passwords in the docker-compose.yml.  
