@@ -65,6 +65,7 @@ RUN apt-get update && \
     cd mcrcon-0.0.5 && \
     gcc -o mcrcon mcrcon.c && \
     mv mcrcon /usr/local/bin && \
+    cd .. && \
     ./downloadmods.sh modslist.txt
 
 # Change to the server directory inside the main Minecraft directory
