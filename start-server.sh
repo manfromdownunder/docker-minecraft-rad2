@@ -10,7 +10,7 @@ send_rcon(){
 
 start_server(){
   echo "Starting Minecraft server."
-  java -Xmx${JAVA_MEMORY_MAX} -Xms${JAVA_MEMORY_MIN} -jar /minecraft/server/forge-${MINECRAFT_VERSION}-${FORGE_VERSION}.jar nogui &
+  java -Xmx${JAVA_MEMORY_MAX} -Xms${JAVA_MEMORY_MIN} --add-opens java.base/sun.security.util=ALL-UNNAMED --add-opens java.base/java.util.jar=ALL-UNNAMED -jar /minecraft/server/forge-${MINECRAFT_VERSION}-${FORGE_VERSION}.jar nogui &
   MINECRAFT_PID=$!
 }
 
