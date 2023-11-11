@@ -10,20 +10,32 @@ send_rcon(){
 
 start_server(){
   echo "Starting Minecraft server."
-  java -Xmx${JAVA_MEMORY_MAX} -Xms${JAVA_MEMORY_MIN} --add-opens java.base/sun.security.util=ALL-UNNAMED --add-opens java.base/java.util.jar=ALL-UNNAMED -jar /minecraft/server/forge-${MINECRAFT_VERSION}-${FORGE_VERSION}.jar nogui &
+  java -Xmx${JAVA_MEMORY_MAX} \
+       -Xms${JAVA_MEMORY_MIN} \
+       -XX:+UseG1GC \
+       -XX:+ParallelRefProcEnabled \
+       -XX:MaxGCPauseMillis=200 \
+       -XX:+UnlockExperimentalVMOptions \
+       -XX:+DisableExplicitGC \
+       -XX:+AlwaysPreTouch \
+       -XX:G1NewSizePercent=20 \
+       -XX:G1ReservePercent=20 \
+       -XX:G1HeapRegionSize=32M \
+       -jar /minecraft/server/forge-${MINECRAFT_VERSION}-${FORGE_VERSION}.jar nogui &
   MINECRAFT_PID=$!
 }
+
 
 send_countdown(){
   for i in 5 4 3 2; do
     send_rcon "say Server is $1 in $i minutes!"
     sleep 60
   done
-  send_rcon "say Server is $1 in 60 seconds. Get up and have a stretch, have some water and some fresh air. Back in 5 mins"
+  send_rcon "say Server is $1 in 60 seconds."
   sleep 30
-  send_rcon "say Server is $1 in 30 seconds. Please log out now"
+  send_rcon "say Server is $1 in 30 seconds. Please log out now!"
   sleep 25
-  send_rcon "say Server is $1 in 5 seconds. Last warning.  Please log out now and reconnect in 5 minutes "
+  send_rcon "say Server is $1 in 5 seconds. Please log out now!"
   sleep 5
   send_rcon "say Server is $1 now!"
 }
