@@ -41,6 +41,7 @@ services:
       - ./world:/minecraft/server/backups
       - ./logs:/minecraft/server/logs
       - ./control/ops.json:/minecraft/server/ops.json
+      - ./config/ftbbackups-common.toml:/config/ftbbackups-common.toml
 #      - ./control/banned-ips.json:/minecraft/server/banned-ips.json
 #      - ./control/banned-players.json:/minecraft/server/banned-players.json
 #      - ./control/whitelist.json:/minecraft/server/whitelist.json
